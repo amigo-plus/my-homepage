@@ -3,41 +3,241 @@ import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout title="About | あみーごのホームページ">
-<img src="/images/amigo++.png" alt="プロフィール写真" class="profile-img" />
-<h1>自己紹介</h1>
-<p>電気通信大学1年生です。最近好きなのは"もぐらコロッケ"です。</p>
-<div class="social-links">
-	<a href="https://x.com/jinauec26" target="_blank" rel="noopener noreferrer">
-		Twitter(X)
-	</a>
-</div>
+	<div class="switch-console"> 
+		<!-- カセット位置 -->
+		<div class="cartridge-slot">
+			<!-- CAMPUS -->
+			<button class="cartridge campus inserted" id="campusBtn" type="button">
+				<span class="label">CAMPUS🎓</span>
+			</button>
+
+			<!-- CREATE -->
+			<button class="cartridge create" id="createBtn" type="button">
+				<span class="label">CREATE🛠️</span>
+			</button>
+		</div>
+
+		<!-- 白いカード本体 -->
+		<div class="profile-card">
+			<!-- CAMPUS内容 -->
+			<div class = "content-panel active" id="campusContent">
+				<div class="profile-layout">
+					<img src="/images/tatsuya.jpg" alt="大学垢プロフ" class="profile-img">
+					<div class="profile-text">
+						<h1>あみーご</h1>
+						<p>電気通信大学1年生。やりたいこと全部やる。</p>
+						<div class="social-links">
+							<a href="https://x.com/jinauec26" target="_blank" rel="noopener noreferrer">
+								Twitter(X)
+				            </a>
+				        </div>
+				    </div>
+				</div>
+			</div>
+
+			<!-- CREATE内容 -->
+			<div class="content-panel" id="createContent">
+				<div class="profile-layout">
+					<img src="/images/amigo++.png" alt="創作垢プロフ" class="profile-img">
+					<div class="profile-text">
+						<h1>あみーご++</h1>
+			            <p>あみーごの創作垢。BlenderやUnity等の製作物を載せていきたい。</p>
+			            <div class="social-links">
+					        <a href="https://x.com/amigo_plus31" target="_blank" rel="noopener noreferrer">
+					        Twitter(X)
+				            </a>
+					    </div>
+				    </div>
+				</div>
+			</div>
+		</div>
+	</div>
 </Layout>
+
+<script>
+	const campusBtn = document.getElementById('campusBtn');
+	const createBtn = document.getElementById('createBtn');
+
+	const campusContent = document.getElementById('campusContent');
+	const createContent = document.getElementById('createContent');
+
+	// 片方を押したら、もう片方が飛び出る相互切り替え処理
+	campusBtn?.addEventListener('click', () => {
+		campusBtn.classList.add('inserted');
+		createBtn?.classList.remove('inserted');
+		campusContent?.classList.add('active');
+		createContent?.classList.remove('active');
+	});
+
+	createBtn?.addEventListener('click', () => {
+		createBtn.classList.add('inserted');
+		campusBtn?.classList.remove('inserted');
+		createContent?.classList.add('active');
+		campusContent?.classList.remove('active');
+	});
+</script>
+
 <style>
-	.profile-img {
+	/* --- 二重枠防止: 外側のLayout.astroにあるmainの背景と影を透過 --- */
+	:global(main) {
+		background: transparent !important;
+		box-shadow: none !important;
+		padding: 0 !important;
+	}
+
+	.switch-console {
+		position: relative; /* これを基準にする */
+		margin-top: 70px; /* カセットがしっかり上に飛び出る余白 */
+		width: 100%;
+	}
+
+	/* カセットの配置エリア */
+	.cartridge-slot {
+		position: absolute;
+		top: -52px; /* 親から飛び出させる */
+		left: 40px;
+		display: flex;
+		gap: 20px;
+		z-index: 1; /* カードの裏側に配置 */
+	}
+
+	/* カセットの共通スタイル */
+	.cartridge {
+		position: relative;
 		width: 120px;
-		height: 120px;
+		height: 65px;
+		padding-top: 10px;
+		border: none;
+		border-radius: 10px 10px 0 0;
+		cursor: pointer;
+		font-weight: bold;
+		font-size: 0.85rem;
+		color: #ffffff;
+		
+		/* 押し込み・引っ張りの滑らかなアニメーション */
+		transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+		box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.3);
+	}
+
+	.cartridge.campus {
+		background: linear-gradient(135deg, #ff007f, #d6006e);
+	}
+
+	.cartridge.create {
+		background: linear-gradient(135deg, #00c9a7, #008f7a);
+	}
+
+	/* --- 位置の状態（トグル） --- */
+	
+	/* 飛び出している状態（高い位置） */
+	.cartridge {
+		transform: translateY(0);
+	}
+
+	/* 押し込まれた状態（カードの中に沈む） */
+	.cartridge.inserted {
+		transform: translateY(32px); /* ガシャッと沈み込む深さ */
+	}
+
+	.cartridge .label {
+		display: block;
+		text-align: center;
+		letter-spacing: 0.05em;
+		text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+	}
+
+	/* --- 白いカード本体（単一の白枠に統合） --- */
+	.profile-card {
+		position: relative;
+		z-index: 2; /* カセットを手前で覆う */
+		
+		background: #ffffff;
+		border-radius: 16px;
+		padding: 2.5rem 2rem 2rem;
+		
+		box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+	}
+
+	.content-panel {
+		display: none;
+		opacity: 0;
+		transition: opacity 0.3s ease-in-out;
+	}
+
+	.content-panel.active {
+		display: block;
+		opacity: 1;
+	}
+
+	/*　プロフィール設定 */
+	.profile-img {
+		width: 140px;
+		height: 140px;
 		border-radius: 50%;
 		object-fit: cover;
-		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+	}
+
+	/* --- プロフィール横並びレイアウト --- */
+	.profile-layout {
+		display: flex;         /* 画像とテキストを横並びにする */
+		align-items: center;    /* 上下の中央を揃える */
+		gap: 2rem;             /* 画像とテキストの間の余白 */
+	}
+
+	.profile-text {
+		display: flex;
+		flex-direction: column; /* 見出し・本文・ボタンを上から順に縦並び */
+		gap: 0.5rem;            /* 各要素の上下間隔 */
+	}
+
+	.profile-text h1 {
+		margin: 0;       /* 上下の不要な余白を消してスッキリさせる */
+		font-size: 1.6rem;
+	}
+
+	.profile-text p {
+		margin: 0;
+	}
+
+	.profile-img {
+		width: 110px;
+		height: 110px;
+		flex-shrink: 0;    /* 画面が小さくなっても画像が潰れないように保護 */
+		border-radius: 50%;
+		object-fit: cover;
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+	}
+
+	/* スマホなど画面が狭いときは自動で縦並びに戻す設定 */
+	@media (max-width: 600px) {
+		.profile-layout {
+			flex-direction: column;
+			text-align: center;
+		}
+		
+		.social-links {
+			justify-content: center;
+		}
 	}
 	.social-links {
 		display: flex;
 		gap: 0.75rem;
-		margin-top: 1rem;
+		margin-top: 1.25rem;
 	}
+
 	.social-links a {
-		padding: 0.4rem, 1rem;
-		border: 1px solid #4a90d9;
+		padding: 0.4rem 1.2rem;
+		border: 1px solid #000000;
 		border-radius: 999px;
-		color: #4a90d9;
+		color: #000000;
 		text-decoration: none;
-        font-size: 0.9rem;
-        transition:
-		    background-color 0.2s ease,
-            color 0.2s ease;
+		font-size: 0.9rem;
+		transition: all 0.2s ease;
 	}
+
 	.social-links a:hover {
-    background-color: #4a90d9;
-    color: #fff;
+		background-color: #000000;
+		color: #ffffff;
 	}
 </style>

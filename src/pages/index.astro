@@ -3,7 +3,70 @@ import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout title = "あみーごのホームページ">
-		<h1>こんにちは、あみーごです</h1>
-		<p>電気通信大学1年生 ここをキャンプ地とする！</p>
-</Layout>
+	<div class="tab-2">
+    <label>
+        <input type="radio" name="tab-2" checked>
+        タブ1
+    </label>
+    <div>
+        背景が単色のシンプルなタブです。
+        タブの文言がはっきり見えるだけでなく、色を変えることでどんなサイトにも馴染みやすいのが特徴です。
+    </div>
 
+    <label>
+        <input type="radio" name="tab-2">
+        タブ2
+    </label>
+    <div>ぜひタブの背景色をお好みのものに変えてみてください。</div>
+
+    <label>
+        <input type="radio" name="tab-2">
+        タブ3
+    </label>
+    <div>もちろんレスポンシブ対応で、タブの追加にも対応しています。</div>
+</div>
+</Layout>
+<style>
+	.tab-2 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 10px;
+    width: 100%;
+}
+.tab-2 > label {
+    flex: 1 1;
+    order: -1;
+    opacity: .5;
+    min-width: 70px;
+    padding: .6em 1em;
+    border-radius: 5px 5px 0 0;
+    background-color: #0e1111;
+    color: #fff;
+    font-size: .9em;
+    text-align: center;
+    cursor: pointer;
+}
+
+.tab-2 > label:hover {
+    opacity: .8;
+}
+
+.tab-2 input {
+    display: none;
+}
+
+.tab-2 > div {
+    display: none;
+    width: 100%;
+    padding: 1.5em 0;
+    background-color: #fff;
+}
+
+.tab-2 label:has(:checked) {
+    opacity: 1;
+}
+
+.tab-2 label:has(:checked) + div {
+    display: block;
+}
+</style>
