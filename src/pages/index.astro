@@ -2,71 +2,520 @@
 import Layout from '../layouts/Layout.astro';
 ---
 
-<Layout title = "あみーごのホームページ">
-	<div class="tab-2">
-    <label>
-        <input type="radio" name="tab-2" checked>
-        タブ1
-    </label>
-    <div>
-        背景が単色のシンプルなタブです。
-        タブの文言がはっきり見えるだけでなく、色を変えることでどんなサイトにも馴染みやすいのが特徴です。
-    </div>
+<Layout title="あみーごのホームページ">
+	<!-- プロフィールカード -->
+	<div class="switch-console"> 
+		<!-- カセット位置 -->
+		<div class="cartridge-slot">
+			<!-- CAMPUS -->
+			<button class="cartridge campus inserted" id="campusBtn" type="button">
+				<span class="label">CAMPUS🎓</span>
+			</button>
 
-    <label>
-        <input type="radio" name="tab-2">
-        タブ2
-    </label>
-    <div>ぜひタブの背景色をお好みのものに変えてみてください。</div>
+			<!-- CREATE -->
+			<button class="cartridge create" id="createBtn" type="button">
+				<span class="label">CREATE🛠️</span>
+			</button>
+		</div>
 
-    <label>
-        <input type="radio" name="tab-2">
-        タブ3
-    </label>
-    <div>もちろんレスポンシブ対応で、タブの追加にも対応しています。</div>
-</div>
+		<!-- 白いカード本体 -->
+		<div class="profile-card">
+			<!-- CAMPUS内容 -->
+			<div class = "content-panel active" id="campusContent">
+				<div class="profile-layout">
+					<img src="/images/tatsuya.jpg" alt="大学垢プロフ" class="profile-img">
+					<div class="profile-text">
+						<h1>あみーご</h1>
+						<p>電気通信大学1年生。やりたいこと全部やるぞ！</p>
+						<div class="social-links">
+							<a href="https://x.com/jinauec26" target="_blank" rel="noopener noreferrer">
+								Twitter(X)
+				            </a>
+				        </div>
+				    </div>
+				</div>
+			</div>
+
+			<!-- CREATE内容 -->
+			<div class="content-panel" id="createContent">
+				<div class="profile-layout">
+					<img src="/images/amigo++.png" alt="創作垢プロフ" class="profile-img">
+					<div class="profile-text">
+						<h1>あみーご++</h1>
+			            <p>BlenderやUnity等の製作物を載せていく予定だぞ！</p>
+			            <div class="social-links">
+					        <a href="https://x.com/amigo_plus31" target="_blank" rel="noopener noreferrer">
+					        Twitter(X)
+				            </a>
+					    </div>
+				    </div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- 作品サンプル -->
+	<div class="section-card koujityuu">
+		<h2>🚧工事中🚧</h2>
+	</div>
+
+	<!-- ミニゲーム -->
+	<div class="section-card game-section">
+		<p class="game-instruction">MINI GAME</p>
+		<div class="game-console-screen">
+			<div class="canvas-container" id="gameArea">
+				<div id="character"></div>
+				<div id="obstacle"></div>
+				<div id="scoreDisplay">SCORE: 0</div>
+        
+				<!-- ゲームオーバー画面 -->
+				<div id="gameover-screen" class="game-overlay hidden">
+					<p id="gameResultText">GAME OVER</p>
+					<button id="restartBtn" type="button">RETRY</button>
+				</div>
+			</div>
+		</div>
+		<p class="game-instruction">【操作方法】 SPACEキー でジャンプ</p>
+	</div>
 </Layout>
+
+<script>
+	// プロフィール部分
+	const campusBtn = document.getElementById('campusBtn');
+	const createBtn = document.getElementById('createBtn');
+	const campusContent = document.getElementById('campusContent');
+	const createContent = document.getElementById('createContent');
+
+	// 片方を押したら、もう片方が飛び出る相互切り替え処理
+	campusBtn?.addEventListener('click', () => {
+		campusBtn.classList.add('inserted');
+		createBtn?.classList.remove('inserted');
+		campusContent?.classList.add('active');
+		createContent?.classList.remove('active');
+	});
+
+	createBtn?.addEventListener('click', () => {
+		createBtn.classList.add('inserted');
+		campusBtn?.classList.remove('inserted');
+		createContent?.classList.add('active');
+		campusContent?.classList.remove('active');
+	});
+
+	// ゲーム部分
+	const character = document.getElementById('character');
+	const obstacle = document.getElementById('obstacle');
+	const gameArea = document.getElementById("gameArea");
+	const scoreDisplay = document.getElementById("scoreDisplay");
+	const gameOverScreen = document.getElementById("gameover-screen");
+	const gameResultText = document.getElementById("gameResultText");
+	const restartBtn = document.getElementById("restartBtn");
+
+	let jumping = false;
+	let isGameOver = false;
+	let score = 0;
+	let speed = 5;
+	let obstacleX = 400;
+	let charBottom = 20; // 通常の足元の高さ
+	let jumpVelocity = 0;
+	let animationId;
+
+	function doJump() {
+		if (!jumping && !isGameOver) {
+			jumping = true;
+			jumpVelocity = 12; // 上に跳ねる力
+		}
+	}
+
+	window.addEventListener("keydown" , (e) => {
+		if (e.code === "Space") {
+			e.preventDefault();
+			doJump();
+		}
+	});
+	gameArea.addEventListener("touchstart", (e) => { e.preventDefault(); doJump(); });
+	gameArea.addEventListener("mousedown", doJump);
+
+	function gameLoop() {
+		if (isGameOver) return;
+		
+		score++;
+		scoreDisplay.textContent = `SCORE: ${Math.floor(score/5)}`;
+		if (score % 300 === 0) speed += 0.5; // 少しずつ速くする
+
+		obstacleX -= speed;
+		if (obstacleX < -30) {
+			obstacleX = 400; // 画面右端に戻す
+		}
+		obstacle.style.left = obstacleX + "px";
+
+		if (jumping) {
+			charBottom += jumpVelocity;        
+			jumpVelocity -= 0.8; // 重力で落ちてくる
+
+			if (charBottom <= 20) { // 着地
+				charBottom = 20;
+				jumping = false;
+			}
+			character.style.bottom = charBottom + "px";
+		}
+
+		// 当たり判定
+		const charRect = character.getBoundingClientRect();
+		const obsRect = obstacle.getBoundingClientRect();
+
+		if (
+			obsRect.left < charRect.right &&
+			obsRect.right > charRect.left &&
+			obsRect.top < charRect.bottom &&
+			obsRect.bottom > charRect.top
+		) {
+			endGame();
+			return;
+		}
+		animationId = requestAnimationFrame(gameLoop);
+	}
+
+	// ゲームオーバー
+	function endGame() {
+		isGameOver = true;
+		cancelAnimationFrame(animationId);
+		gameResultText.textContent = `GAME OVER \nSCORE: ${Math.floor(score / 5)}`;
+		gameOverScreen.classList.remove('hidden');
+	}
+
+	// リセット
+	restartBtn.addEventListener("click", () => {
+		isGameOver = false;
+		score = 0;
+		speed = 5;
+		obstacleX = 400;
+		charBottom = 20;
+		jumping = false;
+		character.style.bottom = "20px";
+		obstacle.style.left = "400px";
+		gameOverScreen.classList.add("hidden");
+		cancelAnimationFrame(animationId);
+		gameLoop();
+	});
+
+	gameLoop();
+
+</script>
+
 <style>
-	.tab-2 {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0 10px;
-    width: 100%;
-}
-.tab-2 > label {
-    flex: 1 1;
-    order: -1;
-    opacity: .5;
-    min-width: 70px;
-    padding: .6em 1em;
-    border-radius: 5px 5px 0 0;
-    background-color: #0e1111;
-    color: #fff;
-    font-size: .9em;
-    text-align: center;
-    cursor: pointer;
-}
+	/* --- 二重枠防止: 外側のLayout.astroにあるmainの背景と影を透過 --- */
+	:global(main) {
+		background: transparent !important;
+		box-shadow: none !important;
+		padding: 0 !important;
+	}
 
-.tab-2 > label:hover {
-    opacity: .8;
-}
+	.switch-console {
+		position: relative; /* これを基準にする */
+		margin-top: 70px; /* カセットがしっかり上に飛び出る余白 */
+		width: 100%;
+	}
 
-.tab-2 input {
-    display: none;
-}
+	/* カセットの配置エリア */
+	.cartridge-slot {
+		position: absolute;
+		top: -52px; /* 親から飛び出させる */
+		left: 40px;
+		display: flex;
+		gap: 20px;
+		z-index: 1; /* カードの裏側に配置 */
+	}
 
-.tab-2 > div {
-    display: none;
-    width: 100%;
-    padding: 1.5em 0;
-    background-color: #fff;
-}
+	/* カセットの共通スタイル */
+	.cartridge {
+		position: relative;
+		width: 120px;
+		height: 65px;
+		padding: 6px 8px 0;
+		border: 3px solid #1a1a1a; /* 太めの黒枠 */
+		border-bottom: none;
+		border-radius: 10px 10px 0 0;
+		background: #2a2a2a !important; /* ダークグレーの本体 */
+		cursor: pointer;
+		
+		/* 押し込み・引っ張りの滑らかなアニメーション */
+		transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+		box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.096);
+	}
 
-.tab-2 label:has(:checked) {
-    opacity: 1;
-}
+	.cartridge .label {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 100%;
+		height: 27px;
+		padding-top: 8px;
+		border-radius: 4px;
+		font-weight: bold;
+		font-size: 0.8rem;
+		color: #ffffff;
+		letter-spacing: 0.05em;
+		box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.3);
+	}
 
-.tab-2 label:has(:checked) + div {
-    display: block;
-}
+	.cartridge.campus .label {
+		background: linear-gradient(135deg, #00e1ff);
+	}
+
+	.cartridge.create .label {
+		background: linear-gradient(135deg, #ff007f);
+	}
+
+	/* --- 位置の状態（トグル） --- */
+	
+	/* 飛び出している状態（高い位置） */
+	.cartridge {
+		transform: translateY(0);
+	}
+
+	/* 押し込まれた状態（カードの中に沈む） */
+	.cartridge.inserted {
+		transform: translateY(32px); /* ガシャッと沈み込む深さ */
+	}
+
+	.cartridge .label {
+		display: block;
+		text-align: center;
+		letter-spacing: 0.05em;
+		text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+	}
+
+	/* --- 白いカード本体（単一の白枠に統合） --- */
+	.profile-card {
+		position: relative;
+		z-index: 2; /* カセットを手前で覆う */
+		
+		background: #ffffff;
+		border-radius: 16px;
+		padding: 2.5rem 2rem 2rem;
+		
+		box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+	}
+
+	.content-panel {
+		display: none;
+		opacity: 0;
+		transition: opacity 0.3s ease-in-out;
+	}
+
+	.content-panel.active {
+		display: block;
+		opacity: 1;
+	}
+
+	/*　プロフィール設定 */
+	.profile-img {
+		width: 140px;
+		height: 140px;
+		border-radius: 50%;
+		object-fit: cover;
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+	}
+
+	/* --- プロフィール横並びレイアウト --- */
+	.profile-layout {
+		display: flex;         /* 画像とテキストを横並びにする */
+		align-items: center;    /* 上下の中央を揃える */
+		gap: 2rem;             /* 画像とテキストの間の余白 */
+	}
+
+	.profile-text {
+		display: flex;
+		flex-direction: column; /* 見出し・本文・ボタンを上から順に縦並び */
+		gap: 0.5rem;            /* 各要素の上下間隔 */
+	}
+
+	.profile-text h1 {
+		margin: 0;       /* 上下の不要な余白を消してスッキリさせる */
+		font-size: 1.6rem;
+	}
+
+	.profile-text p {
+		margin: 0;
+	}
+
+	.profile-img {
+		width: 110px;
+		height: 110px;
+		flex-shrink: 0;    /* 画面が小さくなっても画像が潰れないように保護 */
+		border-radius: 50%;
+		object-fit: cover;
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+	}
+
+	/* スマホなど画面が狭いときは自動で縦並びに戻す設定 */
+	@media (max-width: 600px) {
+		.profile-layout {
+			flex-direction: column;
+			text-align: center;
+		}
+		
+		.social-links {
+			justify-content: center;
+		}
+	}
+
+	.social-links {
+		display: flex;
+		gap: 0.75rem;
+		margin-top: 1.25rem;
+	}
+
+	.social-links a {
+		padding: 0.4rem 1.2rem;
+		border: 1px solid #000000;
+		border-radius: 999px;
+		color: #000000;
+		text-decoration: none;
+		font-size: 0.9rem;
+		transition: all 0.2s ease;
+	}
+
+	.social-links a:hover {
+		background-color: #000000;
+		color: #ffffff;
+	}
+
+	.section-card {
+		background-color: #fff;
+		border-radius: 12px;
+		box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+		padding: 2rem;
+		margin-top: 1.5rem;
+	}
+
+	.koujityuu {
+		text-align: center;
+	}
+
+	.game-section {
+		text-align: center;
+		font-family: "DotGothic16", sans-serif;
+	}
+
+	.game-instruction {
+		font-size: 0.85rem;
+		color: #666;
+		margin-bottom: 1rem;
+	}
+	
+	/* ゲーム端末の外枠（黒い液晶ベゼル風） */
+	.game-console-screen {
+		background: #1a1a1a;
+		padding: 16px;
+		border-radius: 16px;
+		box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.6), 0 4px 12px rgba(0, 0, 0, 0.15);
+		display: inline-block;
+		max-width: 100%;
+		box-sizing: border-box;
+	}
+
+	.canvas-container {
+		position: relative;
+        width: 400px;
+        height: 250px; 
+		background-color: #1a1a1a; 
+		overflow: hidden;
+		margin: 0 auto;
+		border: 2px solid #6e6e6e;
+	}
+
+	canvas {
+		display: block;
+		width: 100%;
+		height: auto;
+	}
+
+	.canvas-container::after {
+		content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 20px;
+        background-color: #6e6e6e;
+	}
+
+	/* プレイヤー */
+	#character {
+		width: 35px;
+		height: 35px;
+  		background-color: #ff007f;
+		position: absolute;
+		bottom: 20px; /* 地面の上に配置 */
+		left: 50px;
+	}
+
+	/* 障害物 */
+	#obstacle {
+		width: 30px;
+		height: 30px;
+		background-color: #6e6e6e;
+		position: absolute;
+		bottom: 20px; /* 地面の上に配置 */
+		left: 400px;  /* 最初は画面の右外 */
+	}
+
+
+	/* スコア表示 */
+
+	#scoreDisplay {
+		position: absolute;
+		top: 10px;
+		left: 15px;
+		color: #fff;
+		font-family: monospace;
+		font-weight: bold;
+		font-size: 16px;
+		z-index: 5;
+	}
+
+
+	/* ゲームオーバー画面 */
+
+	.game-overlay {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background-color: rgba(0, 0, 0, 0.85); 
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		z-index: 10;
+	}
+
+
+	.game-overlay.hidden {
+		display: none;
+	}
+
+
+	#gameResultText {
+		color: #fff;
+		font-size: 20px;
+		font-weight: bold;
+		margin-bottom: 15px;
+		white-space: pre-line;
+		line-height: 1.5;
+	}
+
+
+	#restartBtn {
+		padding: 8px 20px;
+		background-color: #ff007f;
+		border: none;
+		color: #fff;
+		font-weight: bold;
+		cursor: pointer;
+		border-radius: 4px;
+	}
+
 </style>
