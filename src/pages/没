@@ -1,0 +1,232 @@
+<!-- ミニゲーム -->
+	<div class="section-card game-section">
+		<p class="game-instruction">MINI GAME</p>
+		<div class="game-console-screen">
+			<div class="canvas-container">
+				<canvas id="MiniGame" width="400" height="250"></canvas>
+			    <div id="gameover-screen" class="game-overlay hidden">
+				    <p id="gameResultText">GAME OVER</p>
+				    <button id="restartBtn" type="button">RETRY</button>
+			    </div>
+		    </div>
+		</div>
+		<p class="game-instruction">【操作方法】 左右キー または A / D キーで移動</p>
+	</div>
+
+    <script>
+	// ゲーム部分
+	//const canvas =document.getElementById('MiniGame') as HTMLCanvasElement;
+	const ctx = canvas?.getContext('2d');
+	const gameOverScreen = document.getElementById('gameover-screen');
+	const restartBtn = document.getElementById('restartBtn');
+	const gameResultText = document.getElementById('gameResultText')
+
+	if (canvas && ctx) {
+		const context = ctx;
+
+		const player = {  // プレイヤー設定
+			x: ( canvas.width / 2 ) - 15,
+			y: canvas.height - 30,
+			width: 30,
+			height: 20,
+			speed: 5,
+			color: '#ff007f'
+		};
+
+		// 障害物・ゲーム状態
+		//let obstacles: { x: number; y: number; width: number; height: number; speed: number }[] = []; // 上から落ちてくる障害物のデータをしまっておく配列
+		let score = 0;
+		let isGameOver = false;
+		//let animationId: number;
+		//const keys: { [key: string]: boolean } = {};
+
+		// キーボード入力の監視
+		window.addEventListener('keydown', (e) => (keys[e.key] = true));
+		window.addEventListener('keyup', (e) => (keys[e.key] = false));
+
+		// 障害物の生成
+		function spawnObstacle() {
+			if (isGameOver) return;
+			const width = Math.random() * 20 + 15;
+			obstacles.push({
+				x: Math.random() * (canvas.width - width),
+				y: -20,
+				width: width,
+				height: 15,
+				speed: Math.random() * 2 + 2 + score * 0.05 // スコアが上がると少し速くなる
+			});
+		}
+		let spawnInterval = setInterval(spawnObstacle, 600);
+
+		// ゲームメインループ
+		function gameLoop() {
+			if (isGameOver) return;
+
+			ctx.clearRect(0, 0, canvas.width, canvas.height); // 画面リセット
+
+			// プレイヤー移動処理 (A/D または 左右キー)
+			if ((keys['ArrowLeft'] || keys['a'] || keys['A']) && player.x > 0) {
+				player.x -= player.speed;
+			}
+			if ((keys['ArrowRight'] || keys['d'] || keys['D']) && player.x < canvas.width - player.width) {
+				player.x += player.speed;
+			}
+
+			// プレイヤーの描画
+			ctx.fillStyle = player.color;
+			ctx.fillRect(player.x, player.y, player.width, player.height);
+
+			// 障害物の更新と描画
+			ctx.fillStyle = '#00ccff';
+			for (let i = obstacles.length - 1; i >= 0; i--) {
+				const obs = obstacles[i];
+				obs.y += obs.speed;
+				ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
+
+				// 当たり判定
+				if (
+					player.x < obs.x + obs.width &&
+					player.x + player.width > obs.x &&
+					player.y < obs.y + obs.height &&
+					player.y + player.height > obs.y
+				) {
+					endGame();
+				}
+
+				// 画面外に出たらスコア加算して削除
+				if (obs.y > canvas.height) {
+					obstacles.splice(i, 1);
+					score++;
+				}
+			}
+
+			// スコア描画
+			ctx.fillStyle = '#ffffff';
+			ctx.font = 'bold 14px sans-serif';
+			ctx.fillText(`SCORE: ${score}`, 10, 20);
+
+			animationId = requestAnimationFrame(gameLoop);
+		}
+
+		// ゲームオーバー処理
+		function endGame() {
+			isGameOver = true;
+			clearInterval(spawnInterval); // 障害物の生成を止める
+			cancelAnimationFrame(animationId); // アニメーションを止める
+			
+			if (gameResultText) gameResultText.textContent = `GAME OVER (SCORE: ${score})`;
+			gameOverScreen?.classList.remove('hidden');
+		}
+
+		// リセット処理
+		function resetGame() {
+			isGameOver = false;
+			score = 0;
+			obstacles = [];
+			player.x = canvas.width / 2 - 15;
+			gameOverScreen?.classList.add('hidden');
+			clearInterval(spawnInterval);
+			spawnInterval = setInterval(spawnObstacle, 600);
+			gameLoop();
+		}
+
+		restartBtn?.addEventListener('click', resetGame);
+
+		// ゲーム開始
+		gameLoop();
+	}
+</script>
+<style>
+		.section-card {
+		background-color: #fff;
+		border-radius: 12px;
+		box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+		padding: 2rem;
+		margin-top: 1.5rem;
+	}
+
+		.game-section {
+		text-align: center;
+		font-family: "DotGothic16", sans-serif;
+	}
+
+	.game-instruction {
+		font-size: 0.85rem;
+		color: #666;
+		margin-bottom: 1rem;
+	}
+	
+	/* ゲーム端末の外枠（黒い液晶ベゼル風） */
+	.game-console-screen {
+		background: #1a1a1a;
+		padding: 16px;
+		border-radius: 16px;
+		box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.6), 0 4px 12px rgba(0, 0, 0, 0.15);
+		display: inline-block;
+		max-width: 100%;
+		box-sizing: border-box;
+	}
+
+	.canvas-container {
+		position: relative;
+		display: inline-block;
+		width: 100%;
+		max-width: 600px;
+		border-radius: 8px;
+		overflow: hidden;
+		background: #2a2a2a;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+		line-height: 0;
+	}
+
+	canvas {
+		display: block;
+		width: 100%;
+		height: auto;
+	}
+
+	/* ゲームオーバー画面 */
+	.game-overlay {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: rgba(0, 0, 0, 0.75);
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		color: #fff;
+		font-weight: bold;
+	}
+
+	.game-overlay.hidden {
+		display: none;
+	}
+
+	.game-over-title {
+		font-size: 1.2rem;
+		font-weight: bold;
+		letter-spacing: 0.05em;
+		margin-bottom: 12px;
+	}
+
+	.game-overlay button {
+		padding: 8px 24px;
+		background: #ff007f;
+		border: none;
+		border-radius: 20px;
+		color: #fff;
+		font-weight: bold;
+		cursor: pointer;
+		font-size: 0.9rem;
+		transition: transform 0.1s ease, background 0.2s ease;
+	}
+
+	.game-overlay button:hover {
+		background: #6e0526;
+		transform: scale(1.05);
+	}
+
+</style>

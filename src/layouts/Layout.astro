@@ -15,6 +15,7 @@ const { title } = Astro.props;
 		/>
 	</head>
 	<body>
+		<div id="stickerContainer"></div>
 		<header>
 			<nav>
 				<a href="/">Home</a>
@@ -26,12 +27,78 @@ const { title } = Astro.props;
 		<main>
 			<slot />
 		</main>
-
+		<button id="clearStickersBtn" class="clear-btn">シールをはがす</button>
 		<footer>© 2026 amigo</footer>
 	</body>
 </html>
+<script>
+import type { getDataEntryById } from "astro:content";
 
-<style>
+	const stickers = [
+		"/images/amigo_sticker.png",
+		"/images/amigochara_sticker.png",
+		"/images/m.png",
+		"/images/s.png",
+	];
+	const stickerContainer = document.getElementById('stickerContainer');
+
+	function createSticker(x,y,isBackground = false) {
+		if (!stickerContainer) return;
+
+		const sticker = document.createElement('img');
+		sticker.classList.add('sticker');
+		const randomSticker = stickers[Math.floor(Math.random()*stickers.length)]; // ランダムにシール選出
+		sticker.src = randomSticker;
+
+		const rotate = Math.floor(Math.random()*60) -30;　//　シールの傾き
+		const scale = (Math.random()*0.4 + 0.8).toFixed(2); // シールの大きさ
+
+		sticker.style.left = `${x}px`;　// 指定された画面の座標（x, y）にシールの位置を設定
+        sticker.style.top = `${y}px`;
+
+		sticker.style.transform = `translate(-50%, -50%) rotate(${rotate}deg) scale(${scale})`;
+		if (isBackground) {
+			sticker.classList.add('bg-sticker');
+		}
+
+		stickerContainer.appendChild(sticker);
+	}
+
+	window.addEventListener('click',(e) => { // クリックしたらシール張る
+		if (e.target.closest('a,button,input')) return;
+		createSticker(e.pageX, e.pageY);
+	})
+
+	window.addEventListener('DOMContentLoaded', () => {
+		const bgStickerCount = 10;
+
+		stickerContainer.style.height = `${document.documentElement.scrollHeight}px`;
+
+		const width = window.innerWidth;
+		const height = document.documentElement.scrollHeight;
+		for (let i = 0; i < bgStickerCount; i++) {
+			const randomX = Math.random()*width;
+			const randomY = Math.random()*height;
+			createSticker(randomX,randomY, true);
+		}
+	});
+
+	// 「シールをはがす」ボタンの処理
+	const clearBtn = document.getElementById('clearStickersBtn');
+
+	if (clearBtn) {
+		clearBtn.addEventListener('click', (e) => {
+        // ボタン自体のクリックで新しくシールが貼られないようにイベント伝播をストップ
+        e.stopPropagation();
+        // .bg-sticker が付いて「いない」クリックで貼ったシールだけを取得
+        const userStickers = document.querySelectorAll('.sticker:not(.bg-sticker)');
+
+		userStickers.forEach(sticker => sticker.remove());
+    });
+}
+</script>
+
+<style is:global>
 	body {
 		max-width: 720px;
 		margin: 0 auto;
@@ -41,18 +108,49 @@ const { title } = Astro.props;
 		color: #333;
 		background-color: #ffffff;
 		background-image:
-		linear-gradient(#ffd6eb 1px, transparent 1px),
-    
-		linear-gradient(90deg, #ffd6eb 1px, transparent 1px);
-  
+		linear-gradient(#e1e1e1 1px, transparent 1px),
+		linear-gradient(90deg, #e1e1e1 1px, transparent 1px);  
 		background-size: 32px 32px;
+		position: relative;
 	}
+
+	/* 背景にシール */
+    .sticker.bg-sticker {
+        z-index: -1 !important;    /* カードやテキストの後ろに配置 */
+    }
+
+	header, main, footer {
+        position: relative;
+        z-index: 10; 
+    }
+
+    /* シールの共通見た目 */
+    .sticker {
+        position: absolute;
+        width: 250px;
+		height: auto;
+        user-select: none;
+        pointer-events: none;
+		z-index: 20;
+        animation: stickerPop 0.15s ease-out forwards;
+        filter: drop-shadow(2px 3px 2px rgba(0,0,0,0.15)); /* シールっぽい影 */
+    }
+
+	/* シールを全画面に配置する透明なエリア */
+    #stickerContainer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none; /* クリックを通過させて下のボタンを押せるようにする */
+    }
 
 	nav {
 		display: flex;
 		gap: 1.5rem;
 		padding-bottom: 1rem;
-		border-bottom: 1px solid #ddd;
+		border-bottom: 1.5px solid #ff007f;
 	}
 
 	nav a {
@@ -77,6 +175,43 @@ const { title } = Astro.props;
 		margin-top: 2rem;
 		padding-top: 1rem;
 		font-size: 0.85rem;
-		color: #888;
+		text-align: center;
+		color: #202020;
 	}
+
+    /* 貼られた瞬間のポンッとなるアニメーション */
+    @keyframes stickerPop {
+        0% {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(1.6);
+        }
+        100% {
+            opacity: 1;
+        }
+    }
+
+	/* シール消去ボタンの見た目 */
+
+	.clear-btn {
+		display: block;
+		margin: 1.5rem auto 0;
+		padding: 0.5rem 1.2rem;
+		font-size: 0.85rem;
+		font-weight: bold;
+		color: #ff007f;
+		background-color: #ffffff;
+		border: 2px solid #ff007f;
+		border-radius: 20px;
+		cursor: pointer;
+		transition: all 0.2s ease;
+		position: relative;
+		z-index: 100; /* シールより上に表示して押しやすくする */
+	}
+
+	.clear-btn:hover {
+		background-color: #ff007f;
+		color: #ffffff;
+		transform: scale(1.05);
+	}
+
 </style>
