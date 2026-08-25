@@ -13,14 +13,18 @@ const { title } = Astro.props;
 			href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;700&display=swap"
 			rel="stylesheet"
 		/>
+		<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&display=swap" rel="stylesheet" />
 	</head>
 	<body>
 		<div id="stickerContainer"></div>
 		<header>
 			<nav>
-				<a href="/">Home</a>
-				<a href="/about">About</a>
-				<a href="/works">Works</a>
+				<a href="/" class="site-logo">amigo</a>
+				<div class ="nav-links">
+					<a href="/">Home</a>
+					<a href="/about">About</a>
+					<a href="/works">Works</a>
+				</div>
 			</nav>
 		</header>
 
@@ -32,13 +36,16 @@ const { title } = Astro.props;
 	</body>
 </html>
 <script>
-import type { getDataEntryById } from "astro:content";
 
 	const stickers = [
 		"/images/amigo_sticker.png",
 		"/images/amigochara_sticker.png",
 		"/images/m.png",
 		"/images/s.png",
+		"/images/star_sticker.png",
+		"/images/ice_sticker.png",
+		"/images/mini_sticker.png",
+		"/images/ink_sticker.png",
 	];
 	const stickerContainer = document.getElementById('stickerContainer');
 
@@ -66,7 +73,12 @@ import type { getDataEntryById } from "astro:content";
 
 	window.addEventListener('click',(e) => { // クリックしたらシール張る
 		if (e.target.closest('a,button,input')) return;
-		createSticker(e.pageX, e.pageY);
+		const rect = stickerContainer.getBoundingClientRect();
+
+		const x = e.clientX - rect.left;
+		const y = e.clientY - rect.top;
+
+		createSticker(x, y);
 	})
 
 	window.addEventListener('DOMContentLoaded', () => {
@@ -93,7 +105,11 @@ import type { getDataEntryById } from "astro:content";
         // .bg-sticker が付いて「いない」クリックで貼ったシールだけを取得
         const userStickers = document.querySelectorAll('.sticker:not(.bg-sticker)');
 
-		userStickers.forEach(sticker => sticker.remove());
+		userStickers.forEach(sticker => sticker.classList.add('is-fading'));
+
+		setTimeout(() => {
+            userStickers.forEach(sticker => sticker.remove());
+        }, 300);
     });
 }
 </script>
@@ -148,19 +164,33 @@ import type { getDataEntryById } from "astro:content";
 
 	nav {
 		display: flex;
-		gap: 1.5rem;
+		justify-content: space-between;
+		align-items: center;
 		padding-bottom: 1rem;
 		border-bottom: 1.5px solid #ff007f;
 	}
 
-	nav a {
+	.site-logo {
+		font-size: 1.4rem;
+		font-weight: bold;
+		color: #ff007f;
+		text-decoration: none;
+		font-family: "Dela Gothic One", sans-serif;
+	}
+
+	.nav-links {
+		display: flex;
+		gap: 1.5rem;
+	}
+
+	.nav-links a {
 		color: #ff007f;
 		text-decoration: none;
 		transition: color 0.2s ease;
 	}
 
-	nav a:hover {
-		color: #ff007f;
+	.nav-links a:hover {
+		opacity: 0.7;
 	}
 
 	main {
@@ -214,4 +244,17 @@ import type { getDataEntryById } from "astro:content";
 		transform: scale(1.05);
 	}
 
+	/* フェードアウトアニメーションの定義 */
+	@keyframes stickerFadeOut {
+		0% {
+			opacity: 1;
+		}
+		100% {
+			opacity: 0;
+		}
+	}
+
+	.sticker.is-fading {
+		animation: stickerFadeOut 0.3s ease-out forwards !important;
+	}
 </style>
