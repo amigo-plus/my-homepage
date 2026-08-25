@@ -132,8 +132,11 @@ import Layout from '../layouts/Layout.astro';
 			doJump();
 		}
 	});
-	gameArea.addEventListener("touchstart", (e) => { e.preventDefault(); doJump(); });
-	gameArea.addEventListener("mousedown", doJump);
+
+	gameArea.addEventListener("pointerdown", (e) => {
+		e.preventDefault();
+		doJump();
+	});
 
 	function gameLoop() {
 		if (isGameOver) return;

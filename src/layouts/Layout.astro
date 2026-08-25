@@ -71,8 +71,8 @@ const { title } = Astro.props;
 		stickerContainer.appendChild(sticker);
 	}
 
-	window.addEventListener('click',(e) => { // クリックしたらシール張る
-		if (e.target.closest('a,button,input')) return;
+	window.addEventListener('pointerdown',(e) => { // クリックしたらシール張る
+		if (e.target.closest('a,button,input, #gameArea')) return;
 		const rect = stickerContainer.getBoundingClientRect();
 
 		const x = e.clientX - rect.left;
@@ -256,5 +256,16 @@ const { title } = Astro.props;
 
 	.sticker.is-fading {
 		animation: stickerFadeOut 0.3s ease-out forwards !important;
+	}
+
+	html, body {
+		touch-action: manipulation; /* ダブルタップで拡大防止 */
+	}
+
+	/* スマホ画面用の調整 */
+	@media (max-width: 768px) {
+		.sticker {
+			width: 140px; /* スマホだと250pxは大きいので少し小さく */
+		}
 	}
 </style>
