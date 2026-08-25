@@ -438,15 +438,16 @@ import Layout from '../layouts/Layout.astro';
 	}
 
 	.canvas-container {
-		position: relative;
-        width: 400px;
-        height: 250px; 
-		background-color: #1a1a1a; 
-		overflow: hidden;
-		margin: 0 auto;
-		border: 2px solid #6e6e6e;
-	}
-
+    position: relative;
+    width: 100%;           /* 親要素に合わせて可変 */
+    max-width: 400px;     /* PCでは最大400px */
+    aspect-ratio: 4 / 2.5; /* 縦横比を固定して画面に合わせて伸縮 */
+    background-color: #1a1a1a; 
+    overflow: hidden;
+    margin: 0 auto;
+    border: 2px solid #6e6e6e;
+    box-sizing: border-box;
+}
 	canvas {
 		display: block;
 		width: 100%;
