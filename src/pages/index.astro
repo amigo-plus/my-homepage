@@ -427,42 +427,45 @@ import Layout from '../layouts/Layout.astro';
 	}
 	
 	/* ゲーム端末の外枠（黒い液晶ベゼル風） */
+
 	.game-console-screen {
 		background: #1a1a1a;
 		padding: 16px;
 		border-radius: 16px;
 		box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.6), 0 4px 12px rgba(0, 0, 0, 0.15);
-		display: inline-block;
-		max-width: 100%;
+		display: block;        /* inline-block から block に変更 */
+		width: 100%;          /* 幅をしっかり伸ばす */
+		max-width: 400px;     /* 最大幅を指定 */
+		margin: 0 auto;       /* 中央寄せ */
 		box-sizing: border-box;
 	}
 
-	.canvas-container {
-    position: relative;
-    width: 100%;           /* 親要素に合わせて可変 */
-    max-width: 400px;     /* PCでは最大400px */
-    aspect-ratio: 4 / 2.5; /* 縦横比を固定して画面に合わせて伸縮 */
-    background-color: #1a1a1a; 
-    overflow: hidden;
-    margin: 0 auto;
-    border: 2px solid #6e6e6e;
-    box-sizing: border-box;
-}
-	canvas {
-		display: block;
-		width: 100%;
-		height: auto;
-	}
 
+	/* 2. ゲーム画面本体：高さと幅を固定指定 */
+	.canvas-container {
+		position: relative;
+		width: 100%;
+		height: 250px;        /* 高さをしっかり250px確保 */
+		background-color: #1a1a1a; 
+		overflow: hidden;
+		margin: 0 auto;
+		border: 2px solid #6e6e6e;
+		border-radius: 8px;
+		box-sizing: border-box;
+	}
+	
+
+	/* 3. 地面の線：高さを調整 */
 	.canvas-container::after {
 		content: "";
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 20px;
-        background-color: #6e6e6e;
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		height: 20px;
+		background-color: #6e6e6e;
 	}
+	
 
 	/* プレイヤー */
 	#character {
