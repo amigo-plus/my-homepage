@@ -262,11 +262,11 @@ import Layout from '../layouts/Layout.astro';
 	}
 
 	.cartridge.campus .label {
-		background: linear-gradient(135deg, #00e1ff);
+		background: #00e1ff;
 	}
 
 	.cartridge.create .label {
-		background: linear-gradient(135deg, #ff007f);
+		background: #ff007f;
 	}
 
 	/* --- 位置の状態（トグル） --- */
@@ -439,12 +439,14 @@ import Layout from '../layouts/Layout.astro';
 
 	.canvas-container {
 		position: relative;
-        width: 400px;
-        height: 250px; 
+    	width: 100%;           /* 親要素に合わせて可変 */
+		max-width: 400px;  
+		aspect-ratio: 4 / 2.5; 
 		background-color: #1a1a1a; 
-		overflow: hidden;
+		overflow: hidden;    
 		margin: 0 auto;
-		border: 2px solid #6e6e6e;
+   		border: 2px solid #6e6e6e;
+		box-sizing: border-box;
 	}
 
 	canvas {
