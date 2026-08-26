@@ -1,0 +1,98 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title ="Links | あみーごのホームページ">
+    <!-- リンク集 -->
+    <div class="profile-text">
+        <h1 class="heading-2">LINKS</h1>
+
+        <div class="link-container">
+            <a href="https://toramutton.me/" target="_blank" rel="noopner noreferrer" class="link-card">
+                <div class="link-layout">
+                    <img src="/images/tora.webp" class="link-image">
+                    <div class="link-text">
+                        <h3>トラマト</h3>
+                    </div>
+                </div>
+            </a>
+            
+            <a href="https://shiori-02-14.github.io/Homepage/index.html" target="_blank" rel="noopner noreferrer" class="link-card">
+                <div class="link-layout">
+                    <img src="/images/s.jpg" class="link-image">
+                    <div class="link-text">
+                        <h3>しおり🔖</h3>
+                    </div>
+                </div>
+            </a>
+
+            <a href="https://lanips-homepage.vercel.app/" target="_blank" rel="nooper noreferrer" class="link-card">
+                <div class="link-layout">
+                    <img src="/images/lani.jpg" class="link-image">
+                    <div class="link-text">
+                        <h3>Lanips</h3>
+                    </div>
+                </div>
+            </a>
+
+        </div>
+
+    </div>
+
+</Layout>
+<style>
+    .profile-text h1 {
+		margin: 0; 
+		font-size: 2rem;
+		font-family: "Dela Gothic One", sans-serif;
+		color: #ff007f;
+	}
+	
+	.heading-2 {
+		padding:0 .4em 0.001em;    
+		border-bottom: 2px solid #ff007f;
+		background-color: #ffffff;
+		color: #333333;
+	}
+
+    .link-card {
+        display: block;
+        position: relative;
+        z-index: 5;
+        margin-top: 10px;
+        background-color: #ffffff;
+        border-radius: 16px;
+        padding: 0.3rem 2rem 0.3rem;
+        box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+        text-decoration: none;
+        color: inherit;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .link-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+        color: #ff007f;
+    }
+
+    .link-layout {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+    }
+
+    .link-image {
+        width: 50px;
+        height: 50px;
+        flex-shrink: 0;
+        border-radius: 50%;
+        object-fit: cover;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    }
+	
+    .link-text {
+        display: flex;
+        flex-direction: column;
+        gap: 0.1rem;
+    }
+</style>
