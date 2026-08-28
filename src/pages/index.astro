@@ -28,8 +28,11 @@ import Layout from '../layouts/Layout.astro';
                         <h1 class="heading-25" data-word="ABOUT">あみーご</h1>
                         <p>電気通信大学1年生。やりたいこと全部やるぞ！</p>
                         <div class="social-links">
-                            <a href="https://x.com/jinauec26" target="_blank" rel="noopener noreferrer">
+                            <a href="https://x.com/jinauec26" target="_blank" rel="noopener noreferrer" class="X">
                                 Twitter(X)
+                            </a>
+                            <a href="/about" class="more">
+                                PROFILE→
                             </a>
                         </div>
                     </div>
@@ -44,7 +47,7 @@ import Layout from '../layouts/Layout.astro';
                         <h1 class="heading-25" data-word="ABOUT">あみーご++</h1>
                         <p>BlenderやUnity等の製作物の進捗を載せていく予定だぞ！</p>
                         <div class="social-links">
-                            <a href="https://x.com/amigo_plus31" target="_blank" rel="noopener noreferrer">
+                            <a href="https://x.com/amigo_plus31" target="_blank" rel="noopener noreferrer" class="X">
                                 Twitter(X)
                             </a>
                         </div>
@@ -337,7 +340,7 @@ import Layout from '../layouts/Layout.astro';
         margin-top: 1.25rem;
     }
 
-    .social-links a {
+    .social-links .X {
         padding: 0.4rem 1.2rem;
         border: 1px solid #000000;
         border-radius: 999px;
@@ -347,8 +350,23 @@ import Layout from '../layouts/Layout.astro';
         transition: all 0.2s ease;
     }
 
-    .social-links a:hover {
+    .social-links .X:hover {
         background-color: #000000;
+        color: #ffffff;
+    }
+
+    .social-links .more {
+        padding: 0.4rem 1.2rem;
+        border: 1px solid #ff007f;
+        border-radius: 999px;
+        color: #ff007f;
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: all 0.2s ease;
+    }
+
+    .social-links .more:hover {
+        background-color: #ff007f;
         color: #ffffff;
     }
 
