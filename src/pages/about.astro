@@ -30,21 +30,20 @@ import Layout from '../layouts/Layout.astro';
 </Layout>
 
 <style>
-	/* --- プロフィール横並びレイアウト --- */
 	.profile-layout {
-		display: flex;         /* 画像とテキストを横並びにする */
-		align-items: center;    /* 上下の中央を揃える */
-		gap: 5rem;             /* 画像とテキストの間の余白 */
+		display: flex;        
+		align-items: center;   
+		gap: 5rem;             
 	}
 
 	.profile-text {
 		display: flex;
 		flex-direction: column; /* 見出し・本文・ボタンを上から順に縦並び */
-		gap: 0.1rem;            /* 各要素の上下間隔 */
+		gap: 0.1rem;             
 	}
 
 	.profile-text h1 {
-		margin: 0;       /* 上下の不要な余白を消してスッキリさせる */
+		margin: 0;       
 		font-size: 2rem;
 		font-family: "Dela Gothic One", sans-serif;
 		color: #ff007f;
@@ -72,14 +71,12 @@ import Layout from '../layouts/Layout.astro';
 	.profile-img {
 		width: 150px;
 		height: 150px;
-		flex-shrink: 0;    /* 画面が小さくなっても画像が潰れないように保護 */
+		flex-shrink: 0;  
 		border-radius: 50%;
 		object-fit: cover;
-		margin-left: 2rem;
 		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 	}
 
-	/* スマホなど画面が狭いときは自動で縦並びに戻す設定 */
 	@media (max-width: 600px) {
 		.profile-layout {
 			flex-direction: column;

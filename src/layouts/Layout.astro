@@ -104,7 +104,7 @@ const { title } = Astro.props;
 		clearBtn.addEventListener('click', (e) => {
         // ボタン自体のクリックで新しくシールが貼られないようにイベント伝播をストップ
         e.stopPropagation();
-        // .bg-sticker が付いて「いない」クリックで貼ったシールだけを取得
+        // クリックで貼ったシールだけを取得
         const userStickers = document.querySelectorAll('.sticker:not(.bg-sticker)');
 
 		userStickers.forEach(sticker => sticker.classList.add('is-fading'));
@@ -151,17 +151,16 @@ const { title } = Astro.props;
         pointer-events: none;
 		z-index: 20;
         animation: stickerPop 0.15s ease-out forwards;
-        filter: drop-shadow(2px 3px 2px rgba(0,0,0,0.15)); /* シールっぽい影 */
+        filter: drop-shadow(2px 3px 2px rgba(0,0,0,0.15)); 
     }
-
-	/* シールを全画面に配置する透明なエリア */
-    #stickerContainer {
+	
+	#stickerContainer {
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        pointer-events: none; /* クリックを通過させて下のボタンを押せるようにする */
+        pointer-events: none; 
     }
 
 	nav {
@@ -222,8 +221,6 @@ const { title } = Astro.props;
         }
     }
 
-	/* シール消去ボタンの見た目 */
-
 	.clear-btn {
 		display: block;
 		margin: 1.5rem auto 0;
@@ -237,7 +234,7 @@ const { title } = Astro.props;
 		cursor: pointer;
 		transition: all 0.2s ease;
 		position: relative;
-		z-index: 100; /* シールより上に表示して押しやすくする */
+		z-index: 100; 
 	}
 
 	.clear-btn:hover {
@@ -267,7 +264,7 @@ const { title } = Astro.props;
 	/* スマホ画面用の調整 */
 	@media (max-width: 768px) {
 		.sticker {
-			width: 140px; /* スマホだと250pxは大きいので少し小さく */
+			width: 140px; 
 		}
 	}
 </style>
