@@ -22,7 +22,12 @@ import Layout from '../layouts/Layout.astro';
 					<br>
 					<h3>あみーごです。創作活動が大好き！</h3>
 					<h3>イラスト、3D、ゲーム制作とかいろいろ</h3>
-					<h3>思いついたものを少しずつ形にしていけたらな、と思ってます😼</h3>			        
+					<h3>思いついたものを少しずつ形にしていけたらな、と思ってます😼</h3>	
+					<div class="social-links">
+                        <a href="https://note.com/jinauec26/n/nd376f91f64d3" target="_blank" rel="noopener noreferrer" class="note">
+                            もっと詳しく
+                        </a>
+					</div>		        
 				</div>
 			</div>
 		</div>
@@ -76,6 +81,27 @@ import Layout from '../layouts/Layout.astro';
 		object-fit: cover;
 		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 	}
+
+	.social-links {
+        display: flex;
+        gap: 0.75rem;
+        margin-top: 1.25rem;
+    }
+
+    .social-links .note {
+        padding: 0.4rem 1.2rem;
+        border: 1px solid #000;
+        border-radius: 999px;
+        color: #000;
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: all 0.2s ease;
+    }
+
+    .social-links .note:hover {
+        background-color: #000;
+        color: #fff;
+    }
 
 	@media (max-width: 600px) {
 		.profile-layout {
